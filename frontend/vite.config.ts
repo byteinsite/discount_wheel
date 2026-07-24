@@ -3,6 +3,11 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  preview: {
+    allowedHosts: [
+      'discountwheel-copy-production.up.railway.app' // Ваш домен на Railway
+    ]
+  },
   server: {
     host: true,
     port: 5173,
