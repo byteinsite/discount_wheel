@@ -8,7 +8,7 @@ Mini App с колесом скидок: пользователь открыва
 |------|------------|
 | Frontend | React, TypeScript, Vite, Telegram WebApp SDK, CSS |
 | Backend | Python 3.12, FastAPI, SQLAlchemy (async), PostgreSQL |
-| Infra | Docker Compose, Nginx, Redis (опционально) |
+| Infra | Docker Compose, Nginx, Redis (опционально), Railway |
 
 ## Структура
 
@@ -89,6 +89,21 @@ docker compose up --build
 
 - Mini App: http://localhost:8080  
 - API docs: http://localhost:8000/docs  
+
+## Деплой на Railway
+
+Production-деплой: два сервиса (`backend/`, `frontend/`) + PostgreSQL plugin.
+
+Подробная инструкция: **[RAILWAY.md](./RAILWAY.md)**
+
+Кратко:
+
+1. PostgreSQL plugin → `DATABASE_URL` через Reference на backend
+2. Сервис **backend** (Root Directory: `backend`) — `TELEGRAM_BOT_TOKEN`, `ALLOW_DEV_AUTH=false`
+3. Сервис **frontend** (Root Directory: `frontend`) — `BACKEND_URL=https://${{backend.RAILWAY_PUBLIC_DOMAIN}}`
+4. Публичный URL frontend → Web App URL в BotFather
+
+Docker-образы слушают `$PORT` (Railway) и готовы к healthcheck.
 
 ## Локальная разработка
 
