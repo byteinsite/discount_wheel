@@ -37,9 +37,10 @@ PostgreSQL
 ## 3. Backend-сервис
 
 1. **+ New** → **GitHub Repo** → тот же репозиторий
-2. **Settings** → **Root Directory**: `backend`
-3. **Settings** → **Networking** → **Generate Domain** (нужен публичный URL для healthcheck и отладки)
-4. **Variables**:
+2. **Settings** → **Source** → **Root Directory**: `backend` ← **обязательно**
+3. **Settings** → **Build** → убедитесь, что используется **Dockerfile** (config-as-code: `backend/railway.json`)
+4. **Settings** → **Networking** → **Generate Domain**
+5. **Variables**:
 
 | Переменная | Значение |
 |------------|----------|
@@ -52,14 +53,17 @@ PostgreSQL
 
 5. **Deploy** — healthcheck: `GET /health`
 
-Файл `backend/railway.toml` уже задаёт builder и healthcheck.
+В логах сборки должно быть: **Using Detected Dockerfile** (не Railpack).
+
+Файлы `backend/railway.json` и `backend/railway.toml` принудительно включают Dockerfile builder.
 
 ## 4. Frontend-сервис
 
 1. **+ New** → **GitHub Repo** → тот же репозиторий
-2. **Root Directory**: `frontend`
-3. **Networking** → **Generate Domain** — это URL для Mini App в BotFather
-4. **Variables**:
+2. **Settings** → **Source** → **Root Directory**: `frontend` ← **обязательно**
+3. **Settings** → **Build** → Dockerfile (`frontend/railway.json`)
+4. **Networking** → **Generate Domain** — это URL для Mini App в BotFather
+5. **Variables**:
 
 | Переменная | Значение |
 |------------|----------|
@@ -141,6 +145,30 @@ railway up
 ```
 
 ## Troubleshooting
+
+### `Railpack could not determine how to build` / `Script start.sh not found`
+
+Railway пытается собрать **весь репозиторий** через Railpack, а не через Dockerfile.
+
+**Исправление:**
+
+1. Откройте сервис → **Settings** → **Source**
+2. **Root Directory**:
+   - backend-сервис → `backend`
+   - frontend-сервис → `frontend`
+3. Сохраните и нажмите **Redeploy**
+4. В логах сборки должно появиться: `Using Detected Dockerfile`
+
+Если Root Directory уже верный, но Railpack всё равно запускается:
+
+1. Добавьте переменную `NO_CACHE=1` на сервис
+2. **Redeploy** ещё раз
+3. Проверьте, что в репозитории есть `backend/railway.json` (или `frontend/railway.json`)
+
+> В UI Builder может отображаться «Railpack (Default)» — это нормально.  
+> При деплое `railway.json` в Root Directory **переопределяет** UI.
+
+### Прочие проблемы
 
 | Проблема | Решение |
 |----------|---------|
