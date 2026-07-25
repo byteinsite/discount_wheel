@@ -18,7 +18,9 @@ export default defineConfig({
 
   // Настройки для продакшена на Railway
   preview: {
-    allowedHosts: 'all', // Это снимет блокировку host allowed
+    allowedHosts: [
+      'discountwheel-copy-production.up.railway.app'
+    ], // Это снимет блокировку host allowed
     host: true,
     port: process.env.PORT ? Number(process.env.PORT) : 4173,
     proxy: {
