@@ -1,8 +1,9 @@
-import { defineConfig } from "vite"
-import react from "@vitejs/plugin-react"
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  
   server: {
     host: true,
     port: 5173,
@@ -14,12 +15,13 @@ export default defineConfig({
       "/health": "http://localhost:8000",
     },
   },
+
+  // Настройки для продакшена на Railway
   preview: {
-    allowedHosts: 'all', // Убирает ошибку "Blocked request"
+    allowedHosts: 'all', // Это снимет блокировку host allowed
     host: true,
-    port: Number(process.env.PORT) || 4173, // Передаем порт от Railway
+    port: process.env.PORT ? Number(process.env.PORT) : 4173,
     proxy: {
-      // Подставляем URL вашего FastAPI бэкенда на Railway
       "/auth": process.env.VITE_API_URL || "http://localhost:8000",
       "/me": process.env.VITE_API_URL || "http://localhost:8000",
       "/spin": process.env.VITE_API_URL || "http://localhost:8000",
@@ -27,4 +29,4 @@ export default defineConfig({
       "/health": process.env.VITE_API_URL || "http://localhost:8000",
     }
   }
-});
+})
